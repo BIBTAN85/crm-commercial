@@ -3,3 +3,4 @@ dist
 .env
 *.db
 renders/*.mp4
+renders/*-simulation.json

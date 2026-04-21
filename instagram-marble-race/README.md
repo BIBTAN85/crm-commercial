@@ -1,20 +1,18 @@
 # instagram-marble-race
 
-Système Node.js + TypeScript qui génère une course de billes en Reel Instagram et publie via l'API officielle Instagram Graph (sans scraping).
+Système Node.js + TypeScript qui génère une course de billes et publie un Reel Instagram avec l'API officielle Instagram Graph (sans scraping).
 
 ## Fonctionnalités
 
 - Sélection du post cible (`TARGET_MEDIA_ID` ou dernier média éligible)
 - Lecture des commentaires via API Graph
-- Filtrage participants avec mot-clé (`ENTRY_KEYWORD`, par défaut `GO`)
-- Déduplication par pseudo
-- Génération vidéo verticale 1080x1920 avec Remotion
-- Choix du gagnant et écran final
-- Génération automatique de légende
+- Filtrage participants avec mot-clé (`ENTRY_KEYWORD`)
+- Déduplication des pseudos
+- Rendu vertical 1080x1920 (Remotion) ou mode simulation local
+- Écran gagnant + légende dynamique
 - Historisation SQLite
-- Publication Instagram avec `dry-run`
-- Planification quotidienne avec `node-cron`
-- Simulation locale avec `MOCK_PARTICIPANTS`
+- Publication Instagram (optionnelle) avec `DRY_RUN`
+- Exécution unique ou planification via cron
 
 ## Installation
 
@@ -23,18 +21,24 @@ cd instagram-marble-race
 npm install
 ```
 
-## Configuration
+## Configuration `.env`
 
-1. Copier `.env.example` en `.env`
-2. Renseigner :
-   - `INSTAGRAM_BUSINESS_ACCOUNT_ID`
-   - `INSTAGRAM_ACCESS_TOKEN`
-   - `TARGET_MEDIA_ID` (optionnel)
-   - `DATABASE_URL`
-   - `OUTPUT_DIR`
-   - `ENTRY_KEYWORD` (`GO`, `BILLE`, etc.)
-   - `COMMENTS_WINDOW_HOURS` (fenêtre temporelle)
-   - `DRY_RUN=true` pour tester sans publier
+Copier `.env.example` vers `.env` puis renseigner :
+
+- `INSTAGRAM_BUSINESS_ACCOUNT_ID`
+- `INSTAGRAM_ACCESS_TOKEN`
+- `TARGET_MEDIA_ID` (optionnel)
+- `DATABASE_URL`
+- `OUTPUT_DIR`
+- `ENTRY_KEYWORD` (`GO`, `BILLE`, etc.)
+- `COMMENTS_WINDOW_HOURS`
+- `MAX_PARTICIPANTS`
+- `MOCK_PARTICIPANTS` (ex: `alice,bob,charlie`)
+- `RENDER_MODE=simulation|remotion`
+- `PUBLIC_VIDEO_URL` (obligatoire pour publication réelle)
+- `DRY_RUN=true|false`
+
+> En pratique: pour tester localement sans Instagram/Chrome, utilise `MOCK_PARTICIPANTS` + `DRY_RUN=true` + `RENDER_MODE=simulation`.
 
 ## Commandes
 
@@ -45,47 +49,29 @@ npm run start
 npm run daily
 ```
 
-Pour exécuter une fois :
+Exécution ponctuelle:
 
 ```bash
 npm run daily -- --once
 ```
 
-## Comment brancher l'API Instagram
+## Publication Instagram (important)
 
-- Utiliser un compte Instagram Business relié à une Page Facebook.
-- Créer une app Meta avec permissions Graph adaptées (`instagram_basic`, `instagram_manage_comments`, `instagram_content_publish`, selon votre cas).
-- Générer un token d'accès valide et le stocker dans `.env`.
+L’endpoint Instagram Graph attend une URL vidéo publique (`video_url`).
+Le chemin local (`./renders/race.mp4`) ne peut pas être publié directement.
 
-## Choix du post cible
-
-- Si `TARGET_MEDIA_ID` est défini : ce post est utilisé.
-- Sinon : le dernier média éligible est récupéré automatiquement.
-
-## Dry-run (sans publication)
-
-- Laissez `DRY_RUN=true`.
-- Le rendu vidéo + historique DB se font normalement.
-- L'appel de publication est ignoré.
-
-## Automatisation avec cron
-
-La tâche quotidienne est pilotée par `CRON_SCHEDULE` (par défaut `0 9 * * *`).
-
-Exemple système :
-
-```bash
-# tous les jours à 09:00 UTC
-npm run daily
-```
+Flux recommandé:
+1. rendre la vidéo localement,
+2. l’uploader sur un stockage public (S3/R2/CDN),
+3. mettre l’URL dans `PUBLIC_VIDEO_URL`,
+4. lancer avec `DRY_RUN=false`.
 
 ## Flux quotidien
 
-1. Récupérer le média cible
-2. Lire les commentaires
-3. Extraire les participants
-4. Simuler et rendre la course
-5. Générer la légende
-6. Sauvegarder l'exécution en SQLite
-7. Publier (ou dry-run)
-
+1. Choisir le media cible
+2. Lire commentaires (ou mock)
+3. Filtrer/dupliquer participants
+4. Générer course + rendu
+5. Construire légende
+6. Sauvegarder en DB
+7. Publier (si `DRY_RUN=false`)

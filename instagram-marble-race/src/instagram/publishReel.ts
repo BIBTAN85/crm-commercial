@@ -10,12 +10,16 @@ interface PublishResult {
 }
 
 export const publishReel = async (videoPath: string, caption: string, dryRun = env.DRY_RUN): Promise<PublishResult> => {
+  accessSync(videoPath);
+
   if (dryRun) {
     logger.info('Dry-run mode enabled, skipping Instagram publish.', { videoPath });
     return { dryRun: true };
   }
 
-  accessSync(videoPath);
+  if (!env.PUBLIC_VIDEO_URL) {
+    throw new Error('PUBLIC_VIDEO_URL is required for real publication (Instagram needs a publicly reachable URL).');
+  }
 
   const createResponse = await instagramClient.post<{ id: string }>(
     `/${env.INSTAGRAM_BUSINESS_ACCOUNT_ID}/media`,
@@ -23,7 +27,7 @@ export const publishReel = async (videoPath: string, caption: string, dryRun = e
     {
       params: {
         media_type: 'REELS',
-        video_url: videoPath,
+        video_url: env.PUBLIC_VIDEO_URL,
         caption
       }
     }
@@ -37,9 +41,5 @@ export const publishReel = async (videoPath: string, caption: string, dryRun = e
   );
 
   logger.info('Reel published on Instagram.', { mediaId: publishResponse.data.id });
-  return {
-    creationId,
-    publishedMediaId: publishResponse.data.id,
-    dryRun: false
-  };
+  return { creationId, publishedMediaId: publishResponse.data.id, dryRun: false };
 };

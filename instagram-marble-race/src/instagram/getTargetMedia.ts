@@ -9,6 +9,11 @@ export const getTargetMedia = async (): Promise<InstagramMedia> => {
     return { id: env.TARGET_MEDIA_ID };
   }
 
+  if (env.MOCK_PARTICIPANTS.trim()) {
+    logger.info('MOCK_PARTICIPANTS detected, using synthetic target media id.');
+    return { id: 'mock-media-id' };
+  }
+
   const response = await instagramClient.get<{ data: InstagramMedia[] }>(`/${env.INSTAGRAM_BUSINESS_ACCOUNT_ID}/media`, {
     params: {
       fields: 'id,caption,timestamp,media_type',
@@ -17,9 +22,7 @@ export const getTargetMedia = async (): Promise<InstagramMedia> => {
   });
 
   const eligible = response.data.data.find((m) => m.media_type === 'VIDEO' || m.media_type === 'CAROUSEL_ALBUM' || m.media_type === 'IMAGE');
-  if (!eligible) {
-    throw new Error('No eligible media found for target post selection.');
-  }
+  if (!eligible) throw new Error('No eligible media found for target post selection.');
 
   logger.info('Automatically selected latest eligible media', { mediaId: eligible.id, mediaType: eligible.media_type });
   return eligible;
