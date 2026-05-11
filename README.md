@@ -1,61 +1,29 @@
-# Maillot Mystère
+# Maillot Mystère — version HTML simple
 
-Site e-commerce vitrine premium pour une marque de coffrets mystères de maillots de football. Le projet est construit avec Next.js, TypeScript, Tailwind CSS, Framer Motion, Lucide React, React Hook Form et Zod.
+Le site est maintenant livré en **HTML/CSS/JavaScript simple**, sans build et sans serveur obligatoire.
 
-## Lancer le projet
+## Ouvrir le site
 
-```bash
-npm install
-npm run dev
-```
+1. Ouvrir le fichier `index.html` directement dans un navigateur.
+2. Double-cliquer sur `index.html` fonctionne aussi sur la plupart des ordinateurs.
 
-Puis ouvrir http://localhost:3000.
+Aucune commande `npm install` ou `npm run dev` n’est nécessaire pour cette version statique.
 
-## Scripts utiles
+## Contenu inclus dans `index.html`
 
-```bash
-npm run dev
-npm run build
-npm run lint
-```
+- Header sticky et menu mobile.
+- Hero premium animé avec coffret mystère stylisé.
+- Bandeau commercial défilant.
+- Section concept et étapes.
+- Boutique avec 8 box fictives.
+- Recherche, filtres, tri et cartes produits.
+- Détail produit en fenêtre modale.
+- Sélecteur de taille.
+- Panier fictif persistant avec `localStorage`.
+- Toast de confirmation lors de l’ajout au panier.
+- Cartes mystères retournables.
+- Compteurs animés, avis clients, FAQ, contact et footer.
 
-## Architecture principale
+## Note
 
-```text
-app/
-  page.tsx
-  boutique/page.tsx
-  boutique/[slug]/page.tsx
-  a-propos/page.tsx
-  contact/page.tsx
-  faq/page.tsx
-  mentions-legales/page.tsx
-  politique-confidentialite/page.tsx
-components/
-  Header.tsx
-  Footer.tsx
-  HeroSection.tsx
-  ProductGrid.tsx
-  ProductCard.tsx
-  CartDrawer.tsx
-  FAQAccordion.tsx
-  ContactForm.tsx
-  BoxOpeningAnimation.tsx
-  MysteryRevealCards.tsx
-data/
-  products.ts
-  testimonials.ts
-  faq.ts
-lib/
-  cart-store.tsx
-  utils.ts
-```
-
-## Fonctionnalités
-
-- Landing page immersive avec hero animé, bandeau défilant, cartes mystères et CTA premium.
-- Boutique filtrable avec recherche, budget, type, rareté, public et tri.
-- Page produit dynamique pour chaque box avec tailles, quantité et ajout au panier.
-- Panier front avec localStorage, modification de quantité, suppression, total et mini drawer.
-- Pages À propos, Contact, FAQ, Mentions légales et Politique de confidentialité.
-- SEO via Metadata Next.js, contenu français complet et structure sémantique.
+Les anciens fichiers Next.js restent dans le dépôt pour historique, mais la version à ouvrir directement dans le navigateur est le fichier `index.html`.
