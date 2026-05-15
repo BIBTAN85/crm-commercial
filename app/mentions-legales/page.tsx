@@ -1,0 +1,5 @@
+import type { Metadata } from "next";
+export const metadata: Metadata = { title: "Mentions légales" };
+export default function LegalPage() {
+  return <section className="px-4 py-16 sm:px-6 lg:px-8"><article className="prose prose-invert mx-auto max-w-4xl"><h1>Mentions légales</h1><p>Ce site est une démonstration e-commerce fictive pour la marque Maillot Mystère. Les informations légales ci-dessous sont génériques et devront être complétées avant toute mise en ligne commerciale.</p><h2>Éditeur du site</h2><p>Raison sociale : à compléter. Adresse : à compléter. Email : contact@maillot-mystere.example.</p><h2>Hébergement</h2><p>Hébergeur : à compléter selon la solution retenue. Adresse et contact : à compléter.</p><h2>Propriété intellectuelle</h2><p>Les textes, interfaces, composants et éléments graphiques du site sont protégés. Toute reproduction non autorisée est interdite.</p><h2>Responsabilité</h2><p>Les contenus sont fournis à titre informatif. Les offres, prix, délais et disponibilités devront être validés dans une version marchande réelle.</p></article></section>;
+}

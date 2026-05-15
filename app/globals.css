@@ -2,14 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  color-scheme: light;
-}
-
-body {
-  @apply bg-surface text-slate-800 antialiased;
-}
-
-.card {
-  @apply rounded-2xl border border-slate-200 bg-white p-5 shadow-card;
-}
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { @apply bg-deep text-white antialiased; }
+body::selection { background: #D6A84F; color: #050505; }
+.field-lines { background-image: linear-gradient(rgba(255,255,255,.11) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.11) 1px, transparent 1px); background-size: 80px 80px; mask-image: linear-gradient(to top, black, transparent); }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

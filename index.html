@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Maillot Mystère — Coffrets mystères de maillots de football</title>
+  <meta name="description" content="Un site vitrine e-commerce en HTML simple pour vendre des coffrets mystères de maillots de football." />
+  <meta property="og:title" content="Maillot Mystère" />
+  <meta property="og:description" content="Commande ta box, choisis ta taille et découvre un maillot de football surprise." />
+  <meta property="og:type" content="website" />
+  <style>
+    :root {
+      --black: #050505;
+      --ink: #181818;
+      --soft: #242424;
+      --white: #ffffff;
+      --muted: #b9b9b9;
+      --burgundy: #7a0019;
+      --wine: #8b1024;
+      --gold: #d6a84f;
+      --pitch: #1f7a3a;
+      --radius: 28px;
+      --shadow: 0 28px 90px rgba(0, 0, 0, .45);
+      --glow: 0 0 42px rgba(214, 168, 79, .35);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--white);
+      background:
+        radial-gradient(circle at 18% 8%, rgba(122, 0, 25, .62), transparent 28rem),
+        radial-gradient(circle at 82% 20%, rgba(214, 168, 79, .14), transparent 25rem),
+        linear-gradient(180deg, #050505 0%, #090909 44%, #050505 100%);
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .container { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    .section { padding: 86px 0; position: relative; }
+    .eyebrow { color: var(--gold); text-transform: uppercase; letter-spacing: .32em; font-size: .78rem; font-weight: 900; }
+    h1, h2, h3 { margin: 0; line-height: .96; letter-spacing: -.055em; text-transform: uppercase; }
+    h1 { font-size: clamp(3.2rem, 9vw, 7.7rem); max-width: 920px; }
+    h2 { font-size: clamp(2.3rem, 6vw, 4.9rem); }
+    h3 { font-size: 1.35rem; letter-spacing: -.025em; }
+    p { color: var(--muted); line-height: 1.75; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 14px 22px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--white);
+      font-size: .82rem;
+      font-weight: 950;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+    .btn:hover { transform: translateY(-2px); border-color: rgba(214,168,79,.75); }
+    .btn-primary { background: var(--gold); color: #090909; border-color: transparent; box-shadow: var(--glow); }
+    .btn-primary:hover { background: #f2c769; }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+      background: rgba(5,5,5,.76);
+      backdrop-filter: blur(18px);
+    }
+    .nav { display: flex; align-items: center; justify-content: space-between; height: 78px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 950; text-transform: uppercase; }
+    .brand-mark { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 16px; color: #090909; background: linear-gradient(135deg, var(--gold), var(--burgundy)); box-shadow: var(--glow); }
+    .brand small { display: block; color: var(--gold); letter-spacing: .34em; font-size: .66rem; }
+    .nav-links { display: flex; gap: 24px; align-items: center; color: #d9d9d9; font-weight: 700; font-size: .92rem; }
+    .nav-actions { display: flex; gap: 10px; align-items: center; }
+    .icon-btn { width: 46px; height: 46px; border-radius: 999px; border: 1px solid rgba(255,255,255,.12); color: var(--white); background: rgba(255,255,255,.06); position: relative; }
+    .cart-count { position: absolute; right: -4px; top: -6px; min-width: 20px; height: 20px; display: grid; place-items: center; border-radius: 999px; color: #090909; background: var(--gold); font-size: .72rem; font-weight: 950; }
+    .menu-btn { display: none; }
+
+    .mobile-menu { display: none; padding: 0 0 18px; }
+    .mobile-menu.open { display: grid; gap: 8px; }
+    .mobile-menu a { padding: 14px 16px; border-radius: 16px; background: rgba(255,255,255,.06); font-weight: 800; }
+
+    .hero { padding: 86px 0 66px; overflow: hidden; }
+    .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
+    .hero-copy p { max-width: 720px; font-size: 1.12rem; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 32px; }
+    .badge { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 999px; color: var(--gold); background: rgba(214,168,79,.1); border: 1px solid rgba(214,168,79,.28); font-size: .78rem; font-weight: 950; letter-spacing: .16em; text-transform: uppercase; }
+    .visual { min-height: 420px; position: relative; display: grid; place-items: center; }
+    .pitch-lines { position: absolute; inset: 0; opacity: .24; background-image: linear-gradient(rgba(255,255,255,.14) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.14) 1px, transparent 1px); background-size: 76px 76px; mask-image: radial-gradient(circle, black 20%, transparent 70%); }
+    .box-scene { width: min(430px, 92vw); height: 360px; position: relative; }
+    .box-base, .box-lid { position: absolute; left: 50%; transform: translateX(-50%); border: 1px solid rgba(214,168,79,.38); box-shadow: var(--glow); }
+    .box-base { bottom: 82px; width: 290px; height: 130px; border-radius: 28px; background: linear-gradient(145deg, #111, #27020b 65%, #111); animation: float 4s ease-in-out infinite; }
+    .box-lid { bottom: 205px; width: 328px; height: 70px; border-radius: 24px; background: linear-gradient(110deg, var(--burgundy), #111); transform-origin: bottom center; animation: openLid 3.4s ease-in-out infinite; }
+    .shirt-card { position: absolute; left: 50%; bottom: 160px; width: 126px; height: 150px; transform: translateX(-50%); border-radius: 28px; border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.1); display: grid; place-items: center; font-size: 4.2rem; animation: revealShirt 3.4s ease-in-out infinite; backdrop-filter: blur(8px); }
+    .spark { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); box-shadow: var(--glow); animation: spark 2.7s ease-in-out infinite; }
+    .spark:nth-child(5) { left: 20%; top: 22%; animation-delay: .1s; }
+    .spark:nth-child(6) { left: 78%; top: 30%; animation-delay: .45s; }
+    .spark:nth-child(7) { left: 68%; top: 72%; animation-delay: .75s; }
+    .floating-card { position: absolute; padding: 12px 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.09); backdrop-filter: blur(10px); font-weight: 950; animation: float 4s ease-in-out infinite; }
+    .floating-card.one { left: 4%; top: 18%; }
+    .floating-card.two { right: 1%; top: 28%; animation-delay: .4s; }
+    .floating-card.three { left: 8%; bottom: 20%; animation-delay: .8s; }
+
+    .ticker { overflow: hidden; border-block: 1px solid rgba(255,255,255,.1); background: rgba(122,0,25,.88); padding: 13px 0; }
+    .ticker-track { display: flex; gap: 34px; width: max-content; animation: marquee 26s linear infinite; font-weight: 950; letter-spacing: .25em; text-transform: uppercase; color: var(--white); }
+    .ticker-track span::after { content: "●"; margin-left: 34px; color: var(--gold); }
+
+    .section-head { text-align: center; max-width: 790px; margin: 0 auto 40px; }
+    .grid { display: grid; gap: 18px; }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .card {
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(255,255,255,.08), rgba(255,255,255,.025));
+      box-shadow: var(--shadow);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 50% 0, rgba(214,168,79,.18), transparent 46%); opacity: 0; transition: opacity .25s ease; pointer-events: none; }
+    .card:hover::before { opacity: 1; }
+    .step-number { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 14px; color: #090909; background: var(--gold); font-weight: 950; margin-bottom: 18px; }
+    .product-card { transition: transform .25s ease, border-color .25s ease; }
+    .product-card:hover { transform: translateY(-9px) rotateX(2deg); border-color: rgba(214,168,79,.45); }
+    .product-art { height: 170px; border-radius: 24px; padding: 18px; background: linear-gradient(135deg, #181818, #050505 55%, #7a0019); border: 1px solid rgba(255,255,255,.1); position: relative; margin-bottom: 20px; }
+    .product-art .question { position: absolute; left: 50%; bottom: 24px; transform: translateX(-50%); width: 74px; height: 74px; display: grid; place-items: center; border-radius: 22px; color: var(--white); background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); font-size: 2.8rem; font-weight: 950; }
+    .product-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .pill { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; border: 1px solid rgba(255,255,255,.12); padding: 7px 10px; color: #dedede; font-size: .78rem; font-weight: 800; }
+    .price { color: var(--gold); font-size: 1.35rem; font-weight: 950; }
+    .product-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+
+    .filters { display: grid; grid-template-columns: 1.4fr repeat(5, 1fr); gap: 10px; margin-bottom: 24px; }
+    .field { width: 100%; border: 1px solid rgba(255,255,255,.12); background: rgba(5,5,5,.72); color: var(--white); border-radius: 16px; padding: 13px 14px; outline: none; }
+    .field:focus { border-color: var(--gold); }
+
+    .reveal-card { height: 154px; border: 0; padding: 0; background: transparent; perspective: 900px; }
+    .reveal-inner { position: relative; display: block; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .55s ease; }
+    .reveal-card:hover .reveal-inner, .reveal-card.open .reveal-inner { transform: rotateY(180deg); }
+    .reveal-front, .reveal-back { position: absolute; inset: 0; display: grid; place-items: center; border-radius: var(--radius); backface-visibility: hidden; border: 1px solid rgba(255,255,255,.12); }
+    .reveal-front { background: linear-gradient(135deg, #111, var(--burgundy)); font-size: 4rem; font-weight: 950; }
+    .reveal-back { background: var(--gold); color: #090909; transform: rotateY(180deg); padding: 20px; font-weight: 950; text-transform: uppercase; }
+
+    .stats { grid-template-columns: repeat(3, 1fr); }
+    .stat strong { color: var(--gold); display: block; font-size: clamp(2.4rem, 6vw, 4.6rem); line-height: 1; }
+    .testimonials { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 10px; }
+    .testimonial { min-width: min(420px, 86vw); scroll-snap-align: start; }
+    .stars { color: var(--gold); letter-spacing: .1em; }
+    .faq-item { border-bottom: 1px solid rgba(255,255,255,.12); }
+    .faq-q { width: 100%; display: flex; justify-content: space-between; align-items: center; border: 0; background: transparent; color: var(--white); padding: 22px 0; text-align: left; font-weight: 950; font-size: 1rem; }
+    .faq-a { display: none; padding: 0 0 22px; color: var(--muted); }
+    .faq-item.open .faq-a { display: block; }
+    .faq-item.open .faq-q span { transform: rotate(45deg); color: var(--gold); }
+
+    .drawer-backdrop { position: fixed; inset: 0; z-index: 80; background: rgba(0,0,0,.68); backdrop-filter: blur(5px); display: none; }
+    .drawer-backdrop.open { display: block; }
+    .drawer { position: fixed; top: 0; right: 0; z-index: 90; width: min(430px, 100%); height: 100vh; background: #080808; border-left: 1px solid rgba(255,255,255,.12); padding: 24px; transform: translateX(104%); transition: transform .28s ease; display: flex; flex-direction: column; }
+    .drawer.open { transform: translateX(0); }
+    .drawer-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .cart-items { display: grid; gap: 12px; overflow: auto; flex: 1; }
+    .cart-item { border: 1px solid rgba(255,255,255,.1); border-radius: 20px; padding: 14px; background: rgba(255,255,255,.04); }
+    .cart-row { display: flex; justify-content: space-between; gap: 12px; align-items: start; }
+    .qty { display: inline-flex; align-items: center; gap: 10px; margin-top: 12px; }
+    .qty button { width: 30px; height: 30px; border-radius: 50%; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.08); color: white; }
+    .toast { position: fixed; z-index: 100; top: 92px; right: 18px; padding: 14px 18px; border-radius: 18px; border: 1px solid rgba(214,168,79,.36); background: #101010; box-shadow: var(--glow); display: none; font-weight: 900; }
+    .toast.show { display: block; animation: toast .25s ease; }
+
+    .modal-backdrop { position: fixed; inset: 0; z-index: 110; background: rgba(0,0,0,.72); backdrop-filter: blur(5px); display: none; place-items: center; padding: 18px; }
+    .modal-backdrop.open { display: grid; }
+    .modal { width: min(760px, 100%); max-height: 92vh; overflow: auto; }
+    .modal-top { display: flex; justify-content: space-between; gap: 18px; align-items: start; }
+    .size-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+    .size-btn { border-radius: 999px; border: 1px solid rgba(255,255,255,.12); background: transparent; color: white; padding: 9px 13px; font-weight: 850; }
+    .size-btn.active { background: var(--gold); color: #080808; border-color: var(--gold); }
+
+    .contact-form { display: grid; gap: 14px; }
+    .contact-form label { font-weight: 850; color: #e9e9e9; }
+    textarea.field { min-height: 130px; resize: vertical; }
+    footer { border-top: 1px solid rgba(255,255,255,.1); padding: 54px 0; background: #030303; }
+    .footer-grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 28px; }
+
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .65s ease, transform .65s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @keyframes float { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-13px); } }
+    @keyframes openLid { 0%, 100% { transform: translateX(-50%) rotate(0); bottom: 205px; } 50% { transform: translateX(-50%) rotate(-8deg); bottom: 238px; } }
+    @keyframes revealShirt { 0%, 100% { transform: translateX(-50%) translateY(42px) rotate(-4deg); opacity: .62; } 50% { transform: translateX(-50%) translateY(-24px) rotate(5deg); opacity: 1; } }
+    @keyframes spark { 0%, 100% { transform: translateY(22px) scale(.5); opacity: 0; } 50% { transform: translateY(-40px) scale(1.15); opacity: 1; } }
+    @keyframes toast { from { transform: translateY(-14px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+    @media (max-width: 980px) {
+      .hero-grid, .grid-4, .grid-3, .grid-2, .stats, .footer-grid { grid-template-columns: 1fr 1fr; }
+      .filters { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: none; }
+      .menu-btn { display: inline-grid; place-items: center; }
+    }
+    @media (max-width: 680px) {
+      .section { padding: 62px 0; }
+      .hero { padding-top: 54px; }
+      .hero-grid, .grid-4, .grid-3, .grid-2, .stats, .footer-grid, .filters { grid-template-columns: 1fr; }
+      .visual { min-height: 330px; }
+      .box-scene { transform: scale(.84); }
+      .nav .btn { display: none; }
+      h1 { font-size: clamp(3rem, 15vw, 4.8rem); }
+      .hero-actions .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="#top" aria-label="Accueil Maillot Mystère">
+        <span class="brand-mark">M</span>
+        <span>Maillot <small>Mystère</small></span>
+      </a>
+      <nav class="nav-links" aria-label="Navigation principale">
+        <a href="#concept">Concept</a>
+        <a href="#boutique">Boutique</a>
+        <a href="#avis">Avis</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-btn" id="openCart" aria-label="Ouvrir le panier">🛒 <span class="cart-count" id="cartCount">0</span></button>
+        <a class="btn btn-primary" href="#boutique">Commander</a>
+        <button class="icon-btn menu-btn" id="menuBtn" aria-label="Ouvrir le menu">☰</button>
+      </div>
+    </div>
+    <div class="container mobile-menu" id="mobileMenu">
+      <a href="#concept">Concept</a>
+      <a href="#boutique">Boutique</a>
+      <a href="#avis">Avis</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy reveal">
+          <span class="badge">⚡ Nouveau drop disponible</span>
+          <h1>Découvre le maillot mystère qui t’attend</h1>
+          <p>Commande ta box, choisis ta taille, ouvre ton coffret et découvre un maillot de foot surprise parmi une sélection de clubs, nations, championnats et éditions rares.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#boutique">Découvrir les box →</a>
+            <a class="btn" href="#concept">Voir le concept</a>
+          </div>
+        </div>
+        <div class="visual reveal" aria-label="Animation stylisée d'ouverture de coffret mystère">
+          <div class="pitch-lines"></div>
+          <div class="box-scene">
+            <div class="floating-card one">PSG ?</div>
+            <div class="floating-card two">Brasil ?</div>
+            <div class="floating-card three">Retro ?</div>
+            <div class="box-lid"></div>
+            <div class="box-base"></div>
+            <div class="shirt-card">👕</div>
+            <span class="spark"></span><span class="spark"></span><span class="spark"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="ticker" aria-label="Bandeau commercial animé">
+      <div class="ticker-track">
+        <span>Drop disponible</span><span>Stock limité</span><span>Maillots mystères</span><span>Box premium</span><span>Expédition rapide</span><span>Éditions rares</span>
+        <span>Drop disponible</span><span>Stock limité</span><span>Maillots mystères</span><span>Box premium</span><span>Expédition rapide</span><span>Éditions rares</span>
+      </div>
+    </div>
+
+    <section class="section" id="concept">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow">Le concept</p>
+          <h2>Tu choisis la taille, on s’occupe du suspense</h2>
+          <p>Chaque coffret est une nouvelle histoire de foot : club mythique, nation iconique, édition rétro ou surprise collector.</p>
+        </div>
+        <div class="grid grid-4">
+          <article class="card reveal"><div class="step-number">1</div><h3>Choisis ta box</h3><p>Découverte, Europe, Premium ou Collector : sélectionne le niveau de surprise.</p></article>
+          <article class="card reveal"><div class="step-number">2</div><h3>Sélectionne ta taille</h3><p>Du junior à l’adulte, tu choisis le fit qui te convient.</p></article>
+          <article class="card reveal"><div class="step-number">3</div><h3>On prépare</h3><p>Ton coffret est assemblé pour créer un vrai moment d’ouverture.</p></article>
+          <article class="card reveal"><div class="step-number">4</div><h3>Tu découvres</h3><p>Ouvre ta box, révèle le club ou la nation, puis vis l’émotion.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="boutique">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow">Boutique</p>
+          <h2>Choisis ton prochain drop</h2>
+          <p>Recherche, filtre et ajoute ta box au panier. Le paiement est volontairement fictif pour cette version HTML simple.</p>
+        </div>
+        <div class="filters card reveal" aria-label="Filtres boutique">
+          <input class="field" id="searchInput" type="search" placeholder="Rechercher une box" aria-label="Rechercher une box" />
+          <select class="field" id="budgetFilter" aria-label="Budget"><option value="">Budget</option><option value="0-50">Moins de 50 €</option><option value="50-80">50 à 80 €</option><option value="80-200">80 € et plus</option></select>
+          <select class="field" id="typeFilter" aria-label="Type"><option value="">Type</option></select>
+          <select class="field" id="rarityFilter" aria-label="Rareté"><option value="">Rareté</option></select>
+          <select class="field" id="audienceFilter" aria-label="Public"><option value="">Public</option><option>Adulte</option><option>Enfant</option><option>Tous</option></select>
+          <select class="field" id="sortSelect" aria-label="Tri"><option value="popularite">Popularité</option><option value="prix-asc">Prix croissant</option><option value="prix-desc">Prix décroissant</option><option value="nouveautes">Nouveautés</option></select>
+        </div>
+        <div class="grid grid-4" id="productGrid"></div>
+      </div>
+    </section>
+
+    <section class="section" id="raretes">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow">Tirage surprise</p>
+          <h2>Ce que tu peux recevoir</h2>
+          <p>Clique ou survole une carte pour révéler un type de maillot possible.</p>
+        </div>
+        <div class="grid grid-3">
+          <button class="reveal-card reveal"><span class="reveal-inner"><span class="reveal-front">?</span><span class="reveal-back">Classique</span></span></button>
+          <button class="reveal-card reveal"><span class="reveal-inner"><span class="reveal-front">?</span><span class="reveal-back">Club européen</span></span></button>
+          <button class="reveal-card reveal"><span class="reveal-inner"><span class="reveal-front">?</span><span class="reveal-back">Nation</span></span></button>
+          <button class="reveal-card reveal"><span class="reveal-inner"><span class="reveal-front">?</span><span class="reveal-back">Vintage</span></span></button>
+          <button class="reveal-card reveal"><span class="reveal-inner"><span class="reveal-front">?</span><span class="reveal-back">Collector</span></span></button>
+          <button class="reveal-card reveal"><span class="reveal-inner"><span class="reveal-front">?</span><span class="reveal-back">Édition spéciale</span></span></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container grid stats">
+        <article class="card stat reveal"><strong data-count="12000">0</strong><p>box expédiées</p></article>
+        <article class="card stat reveal"><strong data-count="42">0</strong><p>pays & ligues</p></article>
+        <article class="card stat reveal"><strong data-count="96">0</strong><p>% de clients conquis</p></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow">Confiance</p>
+          <h2>Pourquoi commander chez nous ?</h2>
+        </div>
+        <div class="grid grid-3">
+          <article class="card reveal"><h3>Maillots sélectionnés</h3><p>Chaque pièce est contrôlée pour offrir une réception propre, crédible et premium.</p></article>
+          <article class="card reveal"><h3>Surprise garantie</h3><p>Tu ne sais pas ce qui arrive, mais tu sais que l’ouverture sera mémorable.</p></article>
+          <article class="card reveal"><h3>Idéal à offrir</h3><p>Un cadeau prêt à déclencher débat, émotion et envie de recommander.</p></article>
+          <article class="card reveal"><h3>Tailles au choix</h3><p>Tu choisis la taille, nous gardons le suspense sur le maillot.</p></article>
+          <article class="card reveal"><h3>Expédition rapide</h3><p>Préparation fluide pour recevoir ton drop sans attendre le mercato.</p></article>
+          <article class="card reveal"><h3>Support réactif</h3><p>Une question sur une box, une taille ou un cadeau ? On répond vite.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="avis">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow">Avis clients</p>
+          <h2>Ils ont vécu l’ouverture</h2>
+        </div>
+        <div class="testimonials reveal">
+          <article class="card testimonial"><div class="stars">★★★★★</div><p>“J’ai reçu un maillot du Portugal, qualité incroyable et ouverture super immersive.”</p><strong>Nassim · Lyon</strong></article>
+          <article class="card testimonial"><div class="stars">★★★★★</div><p>“Super idée cadeau, mon frère a adoré le suspense jusqu’au dernier rabat.”</p><strong>Camille · Nantes</strong></article>
+          <article class="card testimonial"><div class="stars">★★★★★</div><p>“Le suspense rend l’expérience vraiment cool. J’ai déjà recommandé une box Premium.”</p><strong>Hugo · Paris</strong></article>
+          <article class="card testimonial"><div class="stars">★★★★★</div><p>“J’ai commandé deux box, zéro déception. Packaging propre et livraison rapide.”</p><strong>Sarah · Lille</strong></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow">FAQ</p>
+          <h2>Les questions avant le coup d’envoi</h2>
+        </div>
+        <div class="card reveal" id="faqList"></div>
+      </div>
+    </section>
+
+    <section class="section" id="contact">
+      <div class="container grid grid-2">
+        <div class="reveal">
+          <p class="eyebrow">Contact</p>
+          <h2>Besoin d’un coup de main ?</h2>
+          <p>Commande, taille, cadeau, partenariat ou retour : écris-nous et notre support te répondra avec la même énergie qu’un soir de match.</p>
+          <div class="card"><h3>Aide rapide</h3><p>Délais indicatifs : 2 à 5 jours ouvrés. Réseaux fictifs : Instagram, TikTok, YouTube — @maillotmystere.</p></div>
+        </div>
+        <form class="card contact-form reveal" id="contactForm">
+          <label>Sujet<select class="field" required><option value="">Sélectionner</option><option>Commande</option><option>Taille</option><option>Partenariat</option><option>Retour</option></select></label>
+          <label>Nom<input class="field" type="text" required placeholder="Ton nom" /></label>
+          <label>Email<input class="field" type="email" required placeholder="toi@email.com" /></label>
+          <label>Message<textarea class="field" required minlength="10" placeholder="Dis-nous comment on peut t’aider."></textarea></label>
+          <button class="btn btn-primary" type="submit">Envoyer</button>
+          <p id="formMessage" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container card reveal" style="text-align:center; background: radial-gradient(circle at 20% 15%, rgba(214,168,79,.22), transparent 35%), linear-gradient(135deg,#151515,#050505 55%,#7A0019);">
+        <p class="eyebrow">Dernier coup de sifflet</p>
+        <h2>Prêt à ouvrir ta première box ?</h2>
+        <p>Choisis ton coffret, sélectionne ta taille et laisse la magie du football faire le reste.</p>
+        <a class="btn btn-primary" href="#boutique">Commander ma box</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-grid">
+      <div><h3>Maillot Mystère</h3><p>La box premium pour les passionnés de football, les collectionneurs et les cadeaux originaux. Ouvre ta box. Découvre ton maillot. Vis la surprise.</p></div>
+      <div><h3>Navigation</h3><p><a href="#boutique">Boutique</a><br><a href="#faq">FAQ</a><br><a href="#contact">Contact</a></p></div>
+      <div><h3>Légal</h3><p>Mentions légales et politique de confidentialité génériques à compléter avant un vrai lancement commercial.</p><p>© 2026 Maillot Mystère.</p></div>
+    </div>
+  </footer>
+
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="drawer" id="cartDrawer" aria-label="Panier">
+    <div class="drawer-head"><h3>Ton panier</h3><button class="icon-btn" id="closeCart" aria-label="Fermer le panier">×</button></div>
+    <div class="cart-items" id="cartItems"></div>
+    <div style="border-top:1px solid rgba(255,255,255,.12); padding-top:18px; margin-top:18px;">
+      <p style="display:flex; justify-content:space-between; font-size:1.3rem; font-weight:950; color:white;"><span>Total</span><span id="cartTotal">0,00 €</span></p>
+      <button class="btn btn-primary" style="width:100%;" id="checkoutBtn">Finaliser la commande</button>
+      <button class="btn" style="width:100%; margin-top:10px;" id="clearCart">Vider le panier</button>
+    </div>
+  </aside>
+
+  <div class="modal-backdrop" id="productModal" role="dialog" aria-modal="true" aria-label="Détail produit">
+    <article class="card modal">
+      <div class="modal-top">
+        <div><span class="badge" id="modalBadge"></span><h2 id="modalTitle" style="margin-top:14px;"></h2><p class="price" id="modalPrice"></p></div>
+        <button class="icon-btn" id="closeModal" aria-label="Fermer le détail">×</button>
+      </div>
+      <p id="modalDescription"></p>
+      <h3>Ce qui est inclus</h3>
+      <ul id="modalContent"></ul>
+      <h3>Tailles disponibles</h3>
+      <div class="size-list" id="modalSizes"></div>
+      <h3>Clubs & ligues possibles</h3>
+      <p>Premier League, Liga, Serie A, Bundesliga, Ligue 1, grandes nations, éditions européennes, drops lifestyle et pièces plus confidentielles selon arrivage.</p>
+      <button class="btn btn-primary" id="modalAdd">Ajouter au panier</button>
+    </article>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const products = [
+      { slug: "box-decouverte", name: "Box Découverte", price: 39.90, description: "Parfaite pour tester le concept avec un maillot surprise accessible.", content: ["1 maillot officiel surprise", "Carte mystère", "Packaging signature"], rarity: "Classique", badge: "Idéal pour commencer", audience: "Tous", type: "Découverte", popularity: 78 },
+      { slug: "box-europe", name: "Box Europe", price: 54.90, description: "Maillot mystère issu d’un club européen, des grands championnats aux pépites inattendues.", content: ["1 maillot club européen", "Sélection anti-doublon", "Sticker drop"], rarity: "Intermédiaire", badge: "Populaire", audience: "Adulte", type: "Europe", popularity: 91 },
+      { slug: "box-premium", name: "Box Premium", price: 74.90, description: "Sélection plus exclusive avec chances de recevoir un maillot rare ou très recherché.", content: ["1 maillot premium", "Packaging renforcé", "Surprise collector"], rarity: "Premium", badge: "Best-seller", audience: "Adulte", type: "Premium", popularity: 98, isNew: true },
+      { slug: "box-vintage", name: "Box Vintage", price: 89.90, description: "Pour les fans de maillots rétro et éditions anciennes.", content: ["1 maillot rétro", "Fiche histoire", "Housse collector"], rarity: "Rare", badge: "Collector", audience: "Adulte", type: "Vintage", popularity: 83 },
+      { slug: "box-nation", name: "Box Nation", price: 59.90, description: "Maillot mystère d’une sélection nationale pour vibrer comme lors des grandes compétitions.", content: ["1 maillot de nation", "Carte drapeau", "Packaging cadeau"], rarity: "Intermédiaire", badge: "International", audience: "Tous", type: "Nation", popularity: 86 },
+      { slug: "box-enfant", name: "Box Enfant", price: 34.90, description: "Coffret adapté aux jeunes fans de football.", content: ["1 maillot junior", "Carte surprise", "Stickers foot"], rarity: "Classique", badge: "Junior", audience: "Enfant", type: "Enfant", popularity: 72 },
+      { slug: "box-duo", name: "Box Duo", price: 99.90, description: "Deux maillots mystères dans un seul coffret.", content: ["2 maillots surprises", "Tailles personnalisables", "Double packaging"], rarity: "Variable", badge: "Meilleure valeur", audience: "Tous", type: "Duo", popularity: 88 },
+      { slug: "box-collector", name: "Box Collector", price: 129.90, description: "Coffret haut de gamme avec maillot rare, packaging premium et surprise supplémentaire.", content: ["1 maillot très rare", "Certificat de sélection", "Surprise premium"], rarity: "Très rare", badge: "Stock limité", audience: "Adulte", type: "Collector", popularity: 95, isNew: true }
+    ];
+
+    const faqs = [
+      ["Est-ce que les maillots sont officiels ?", "Oui, les coffrets sont pensés autour de maillots officiels sélectionnés avec soin auprès de circuits d’approvisionnement vérifiés."],
+      ["Peut-on choisir son club ?", "Le principe reste le mystère : tu choisis la formule et la taille, puis nous préparons une surprise cohérente avec la box commandée."],
+      ["Peut-on éviter un club ?", "Une option d’exclusion pourra être ajoutée au moment du paiement. Pour cette version vitrine, elle est présentée comme une fonctionnalité à venir."],
+      ["Quels sont les délais de livraison ?", "Les délais indicatifs sont de 2 à 5 jours ouvrés en France métropolitaine après préparation du coffret."],
+      ["Peut-on retourner un maillot ?", "Les retours sont acceptés si le produit est intact, non porté et dans son emballage. Le caractère mystère ne constitue pas un défaut."],
+      ["Les maillots sont-ils neufs ?", "La majorité des box contiennent des maillots neufs. Les box Vintage peuvent inclure des pièces anciennes contrôlées et clairement présentées."],
+      ["Peut-on commander pour offrir ?", "Oui, le coffret est conçu comme un cadeau prêt à offrir, avec une expérience d’ouverture premium."],
+      ["Comment choisir sa taille ?", "Sélectionne ta taille habituelle. En cas d’hésitation, nous recommandons de prendre une taille au-dessus pour un porté lifestyle."],
+      ["Y a-t-il des éditions rares ?", "Oui, certaines formules augmentent les chances de recevoir une édition rare, vintage, nationale ou collector."]
+    ];
+
+    const sizes = ["XS", "S", "M", "L", "XL", "XXL", "8 ans", "10 ans", "12 ans"];
+    const euro = value => new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(value);
+    const $ = selector => document.querySelector(selector);
+    let cart = JSON.parse(localStorage.getItem("maillotMystereCart") || "[]");
+    let activeProduct = products[0];
+    let selectedSize = "M";
+
+    function saveCart() { localStorage.setItem("maillotMystereCart", JSON.stringify(cart)); }
+    function showToast(message) { const toast = $("#toast"); toast.textContent = message; toast.classList.add("show"); setTimeout(() => toast.classList.remove("show"), 2400); }
+    function addToCart(product, size = "M", quantity = 1) {
+      const key = `${product.slug}-${size}`;
+      const item = cart.find(entry => entry.key === key);
+      if (item) item.quantity += quantity;
+      else cart.push({ key, slug: product.slug, name: product.name, price: product.price, size, quantity });
+      saveCart(); renderCart(); openCart(); showToast(`${product.name} ajoutée au panier`);
+    }
+    function renderCart() {
+      $("#cartCount").textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+      $("#cartTotal").textContent = euro(cart.reduce((sum, item) => sum + item.price * item.quantity, 0));
+      $("#cartItems").innerHTML = cart.length ? cart.map(item => `
+        <div class="cart-item">
+          <div class="cart-row"><div><strong>${item.name}</strong><p>Taille ${item.size} · ${euro(item.price)}</p></div><button class="icon-btn" onclick="removeFromCart('${item.key}')" aria-label="Supprimer">×</button></div>
+          <div class="qty"><button onclick="changeQty('${item.key}', -1)">−</button><strong>${item.quantity}</strong><button onclick="changeQty('${item.key}', 1)">+</button></div>
+        </div>`).join("") : `<div class="card"><p>Ton panier est vide. Le prochain maillot surprise t’attend.</p></div>`;
+    }
+    function removeFromCart(key) { cart = cart.filter(item => item.key !== key); saveCart(); renderCart(); }
+    function changeQty(key, delta) { cart = cart.map(item => item.key === key ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item); saveCart(); renderCart(); }
+    function openCart() { $("#cartDrawer").classList.add("open"); $("#drawerBackdrop").classList.add("open"); }
+    function closeCart() { $("#cartDrawer").classList.remove("open"); $("#drawerBackdrop").classList.remove("open"); }
+
+    function productCard(product) {
+      return `<article class="card product-card reveal">
+        <div class="product-art"><span class="badge">${product.badge}</span><div class="question">?</div></div>
+        <h3>${product.name}</h3>
+        <p class="price">${euro(product.price)}</p>
+        <p>${product.description}</p>
+        <div class="product-meta"><span class="pill">${product.rarity}</span><span class="pill">${product.audience}</span><span class="pill">★ ${product.popularity}%</span></div>
+        <div class="product-actions"><button class="btn btn-primary" onclick="addToCart(products.find(p => p.slug === '${product.slug}'))">Ajouter</button><button class="btn" onclick="openProduct('${product.slug}')">Détails</button></div>
+      </article>`;
+    }
+
+    function renderProducts() {
+      const search = $("#searchInput").value.toLowerCase();
+      const budget = $("#budgetFilter").value;
+      const type = $("#typeFilter").value;
+      const rarity = $("#rarityFilter").value;
+      const audience = $("#audienceFilter").value;
+      const sort = $("#sortSelect").value;
+      let list = products.filter(p => p.name.toLowerCase().includes(search) || p.description.toLowerCase().includes(search));
+      if (type) list = list.filter(p => p.type === type);
+      if (rarity) list = list.filter(p => p.rarity === rarity);
+      if (audience) list = list.filter(p => p.audience === audience);
+      if (budget) { const [min, max] = budget.split("-").map(Number); list = list.filter(p => p.price >= min && p.price <= max); }
+      list.sort((a,b) => sort === "prix-asc" ? a.price - b.price : sort === "prix-desc" ? b.price - a.price : sort === "nouveautes" ? Number(!!b.isNew) - Number(!!a.isNew) : b.popularity - a.popularity);
+      $("#productGrid").innerHTML = list.length ? list.map(productCard).join("") : `<p class="card">Aucune box ne correspond aux filtres.</p>`;
+      observeReveals();
+    }
+
+    function openProduct(slug) {
+      activeProduct = products.find(product => product.slug === slug);
+      selectedSize = "M";
+      $("#modalBadge").textContent = activeProduct.badge;
+      $("#modalTitle").textContent = activeProduct.name;
+      $("#modalPrice").textContent = euro(activeProduct.price);
+      $("#modalDescription").textContent = activeProduct.description + " Une formule pensée pour vivre une vraie montée d’adrénaline au moment d’ouvrir le coffret.";
+      $("#modalContent").innerHTML = activeProduct.content.map(item => `<li>${item}</li>`).join("");
+      $("#modalSizes").innerHTML = sizes.map(size => `<button class="size-btn ${size === selectedSize ? "active" : ""}" onclick="selectSize('${size}')">${size}</button>`).join("");
+      $("#productModal").classList.add("open");
+    }
+    function selectSize(size) { selectedSize = size; document.querySelectorAll(".size-btn").forEach(btn => btn.classList.toggle("active", btn.textContent === size)); }
+
+    function setupFilters() {
+      [...new Set(products.map(p => p.type))].forEach(type => $("#typeFilter").insertAdjacentHTML("beforeend", `<option>${type}</option>`));
+      [...new Set(products.map(p => p.rarity))].forEach(rarity => $("#rarityFilter").insertAdjacentHTML("beforeend", `<option>${rarity}</option>`));
+      ["#searchInput", "#budgetFilter", "#typeFilter", "#rarityFilter", "#audienceFilter", "#sortSelect"].forEach(id => $(id).addEventListener("input", renderProducts));
+    }
+
+    function renderFaq() {
+      $("#faqList").innerHTML = faqs.map(([q, a], index) => `<div class="faq-item ${index === 0 ? "open" : ""}"><button class="faq-q" type="button">${q}<span>+</span></button><div class="faq-a">${a}</div></div>`).join("");
+      document.querySelectorAll(".faq-q").forEach(button => button.addEventListener("click", () => button.parentElement.classList.toggle("open")));
+    }
+
+    function observeReveals() {
+      const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add("visible"); }), { threshold: .12 });
+      document.querySelectorAll(".reveal:not(.visible)").forEach(el => observer.observe(el));
+    }
+
+    function animateStats() {
+      const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+        if (!entry.isIntersecting || entry.target.dataset.done) return;
+        entry.target.dataset.done = "true";
+        const end = Number(entry.target.dataset.count);
+        const start = performance.now();
+        const tick = now => {
+          const progress = Math.min((now - start) / 1500, 1);
+          entry.target.textContent = Math.round(end * progress).toLocaleString("fr-FR") + (end === 96 ? "" : "+");
+          if (progress < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }), { threshold: .6 });
+      document.querySelectorAll("[data-count]").forEach(el => observer.observe(el));
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      setupFilters(); renderProducts(); renderCart(); renderFaq(); observeReveals(); animateStats();
+      $("#openCart").addEventListener("click", openCart);
+      $("#closeCart").addEventListener("click", closeCart);
+      $("#drawerBackdrop").addEventListener("click", closeCart);
+      $("#clearCart").addEventListener("click", () => { cart = []; saveCart(); renderCart(); });
+      $("#checkoutBtn").addEventListener("click", () => showToast("Le paiement sera ajouté plus tard."));
+      $("#closeModal").addEventListener("click", () => $("#productModal").classList.remove("open"));
+      $("#productModal").addEventListener("click", event => { if (event.target.id === "productModal") $("#productModal").classList.remove("open"); });
+      $("#modalAdd").addEventListener("click", () => { addToCart(activeProduct, selectedSize); $("#productModal").classList.remove("open"); });
+      $("#menuBtn").addEventListener("click", () => $("#mobileMenu").classList.toggle("open"));
+      document.querySelectorAll(".reveal-card").forEach(card => card.addEventListener("click", () => card.classList.toggle("open")));
+      $("#contactForm").addEventListener("submit", event => { event.preventDefault(); event.currentTarget.reset(); $("#formMessage").textContent = "Message prêt à être envoyé. La connexion backend sera ajoutée prochainement."; });
+    });
+  </script>
+</body>
+</html>
